@@ -1,19 +1,25 @@
 <template>
   <div class="search-box justify-center">
-    <!-- Barra de pesquisa -->
-    <input @input="onInput" :value="query" type="text" class="search-bar" placeholder="Procure aqui a cidade, estado ou país" />
+    <div class="flex flex-col">
+      <!-- Barra de pesquisa -->
+      <input @input="onInput" :value="query" type="text" class="search-bar"
+        placeholder="Procure aqui a cidade, estado ou país" />
 
-    <!-- Resultados de autocompletar -->
-    <div class="autocomplete-results" v-if="autocompleteResults.length">
-      <div v-for="result in autocompleteResults" :key="result.id" class="autocomplete-result" @click="selectAutocompleteResult(result)">
-        {{ result.name }}, {{ result.region }}, {{ current.condition.text }}
+      <!-- Resultados de autocompletar -->
+      <div class="autocomplete-results" v-if="autocompleteResults.length">
+        <div v-for="result in autocompleteResults" :key="result.id" class="autocomplete-result"
+          @click="selectAutocompleteResult(result)">
+          {{ result.name }}, {{ result.region }}
+        </div>
       </div>
     </div>
 
     <!-- Cidades salvas -->
     <div v-if="savedCities.length">
-      <div v-for="(city, index) in savedCities" :key="city.name" class="saved-city flex px-2 py-2 flex-wrap right-0 relative">
-        <p class="text-white flex">{{ city.name }}, {{ city.region }}, {{ city.temperature }}°C, {{ current.condition.text }}</p>
+      <div v-for="(city, index) in savedCities" :key="city.name"
+        class="saved-city flex px-2 py-2 flex-wrap right-0 relative">
+        <p class="text-white flex">{{ city.name }}, {{ city.region }}, {{ city.temperature }}°C, {{ getConditionText(city)
+        }}</p>
         <button @click="removeCity(index)" class="bg-red-500 text-white px-2 py-1 rounded-full ml-2">
           Remover
         </button>
@@ -43,6 +49,9 @@ export default {
     // Remove uma cidade salva
     removeCity(index) {
       this.$emit('removeCity', index);
+    },
+    getConditionText(city) {
+      return city.current && city.current.condition ? city.current.condition.text : 'N/A';
     },
   },
 };

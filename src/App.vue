@@ -13,9 +13,9 @@
           </div>
 
           <!-- Componente de busca -->
-          <search-box v-model:query="searchQuery" :current="weather.current" :autocomplete-results="autocompleteResults" :saved-cities="savedCities"
-            @fetch-autocomplete="fetchAutocomplete" @select-autocomplete-result="selectAutocompleteResult"
-            @remove-city="removeCity" />
+          <search-box v-model:query="searchQuery" :current="weather.current" :autocomplete-results="autocompleteResults"
+            :saved-cities="savedCities" @fetch-autocomplete="fetchAutocomplete"
+            @select-autocomplete-result="selectAutocompleteResult" @remove-city="removeCity" />
 
           <!-- Informações meteorológicas -->
           <WeatherInfo v-if="weather.location.name && weather.current.temp_c" :location="weather.location"
@@ -159,23 +159,6 @@ export default {
       autocompleteResults.value = [];
     };
 
-    // Salva a cidade atual
-    const saveCity = () => {
-      if (searchQuery.value.trim() === '') {
-        console.log('Consulta vazia, não salvo nada');
-        return;
-      }
-      const savedCity = {
-        name: weather.location.name,
-        region: weather.location.region,
-        temperature: weather.current.temp_c,
-      };
-      if (!savedCities.value.some(city => city.name === savedCity.name)) {
-        savedCities.value.push(savedCity);
-        localStorage.setItem('savedCities', JSON.stringify(savedCities.value));
-        loadSavedCities();
-      }
-    };
 
     // Remove uma cidade da lista salva
     const removeCity = (index) => {
@@ -210,9 +193,40 @@ export default {
     const loadSavedCities = () => {
       const savedCitiesJSON = localStorage.getItem('savedCities');
       if (savedCitiesJSON) {
-        savedCities.value = JSON.parse(savedCitiesJSON);
+        savedCities.value = JSON.parse(savedCitiesJSON).map(city => {
+          // Certifica-se de que cada cidade tenha um objeto `current` adequado
+          return {
+            ...city,
+            current: city.current || { condition: { text: 'N/A' } }, // Adiciona condição padrão se não estiver presente
+          };
+        });
       }
     };
+
+   // Salva a cidade atual
+const saveCity = () => {
+  if (searchQuery.value.trim() === '') {
+    console.log('Consulta vazia, não salvo nada');
+    return;
+  }
+
+  const savedCity = {
+    name: weather.location.name,
+    region: weather.location.region,
+    temperature: weather.current.temp_c,
+    current: weather.current,  // Salva toda a resposta da API relacionada à condição do tempo
+  };
+
+  if (!savedCities.value.some(city => city.name === savedCity.name)) {
+    savedCities.value.push(savedCity);
+    localStorage.setItem('savedCities', JSON.stringify(savedCities.value));
+    loadSavedCities();
+  }
+};
+
+
+
+
 
     // Retorna todas as variáveis e funções necessárias para o componente
     return {
