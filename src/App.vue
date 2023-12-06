@@ -119,12 +119,11 @@ export default {
           return;
         }
 
-        const response = await axios.get(`${url_base}/current.json?key=${api_key}&lang=pt&q=${latitude},${longitude}`, {
+        const response = await axios.get(`${url_base}/current.json?key=${api_key}&lang=pt&q=${searchQuery.value}`, {
           headers: {
             'Content-Security-Policy': 'upgrade-insecure-requests'
           }
         });
-
         weather.location = response.data.location || {};
         weather.current = response.data.current || {};
         console.log('Temperature:', weather.current.temp_c);
