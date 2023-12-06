@@ -58,9 +58,9 @@ export default {
     const next3DaysForecastData = ref([]);
     const hourlyForecast = ref([]);
 
-    
+
     // Inicialize dadosDoTempo com a propriedade pm10
-  
+
     // Limpa os resultados de autocomplete
     const handleInput = () => {
       autocompleteResults.value = [];
@@ -119,7 +119,12 @@ export default {
           return;
         }
 
-        const response = await axios.get(`${url_base}/current.json?key=${api_key}&lang=pt&q=${searchQuery.value}`);
+        const response = await axios.get(`${url_base}/current.json?key=${api_key}&lang=pt&q=${latitude},${longitude}`, {
+          headers: {
+            'Content-Security-Policy': 'upgrade-insecure-requests'
+          }
+        });
+
         weather.location = response.data.location || {};
         weather.current = response.data.current || {};
         console.log('Temperature:', weather.current.temp_c);
