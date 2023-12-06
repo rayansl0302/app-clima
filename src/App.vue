@@ -13,7 +13,7 @@
           </div>
 
           <!-- Componente de busca -->
-          <search-box v-model:query="searchQuery" :autocomplete-results="autocompleteResults" :saved-cities="savedCities"
+          <search-box v-model:query="searchQuery" :current="weather.current" :autocomplete-results="autocompleteResults" :saved-cities="savedCities"
             @fetch-autocomplete="fetchAutocomplete" @select-autocomplete-result="selectAutocompleteResult"
             @remove-city="removeCity" />
 
