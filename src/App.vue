@@ -43,7 +43,7 @@ export default {
   setup() {
     const route = useRoute();
     const api_key = 'ebab97879b5e410fae9143336233011';
-    const url_base = 'http://api.weatherapi.com/v1';
+    const url_base = 'https://api.weatherapi.com/v1';  // Atualizado para HTTPS
 
     // Variáveis reativas
     const searchQuery = ref('');
@@ -57,9 +57,6 @@ export default {
     const forecastData = ref({});
     const next3DaysForecastData = ref([]);
     const hourlyForecast = ref([]);
-
-
-    // Inicialize dadosDoTempo com a propriedade pm10
 
     // Limpa os resultados de autocomplete
     const handleInput = () => {
@@ -119,11 +116,7 @@ export default {
           return;
         }
 
-        const response = await axios.get(`${url_base}/current.json?key=${api_key}&lang=pt&q=${searchQuery.value}`, {
-          headers: {
-            'Content-Security-Policy': 'upgrade-insecure-requests'
-          }
-        });
+        const response = await axios.get(`${url_base}/current.json?key=${api_key}&lang=pt&q=${searchQuery.value}`);
         weather.location = response.data.location || {};
         weather.current = response.data.current || {};
         console.log('Temperature:', weather.current.temp_c);
@@ -240,11 +233,11 @@ export default {
       saveCity,
       removeCity,
       dataBuilder,
-
     };
   },
 };
 </script>
+
 
 
 <style lang="scss">
